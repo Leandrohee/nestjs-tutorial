@@ -1,3 +1,6 @@
+/* ---------------------- SERVICES ARE RESPONSABLES FOR THE BUSINESS LOGIC ---------------------- */
+
+
 import { Injectable } from "@nestjs/common";
 import { SignupDto } from "./dto";
 

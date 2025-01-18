@@ -1,3 +1,5 @@
+/* --------------------- THE CONTROLER IS RESPONSABLE ONLY HANDLE THE ROUTES -------------------- */
+
 import { Body, Controller, Post } from "@nestjs/common";
 import { AuthService } from "./auth.service";
 import { SignupDto } from "./dto";
