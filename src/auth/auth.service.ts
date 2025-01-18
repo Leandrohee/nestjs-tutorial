@@ -1,11 +1,12 @@
 import { Injectable } from "@nestjs/common";
+import { SignupDto } from "./dto";
 
 @Injectable({})
 export class AuthService {
 
     //Business logic that return an json
-    signup(){
-        return {msg: "I have signup!"}
+    signup(dto: SignupDto){
+        return ({msg: `I have signup with the email: ${dto.email}`})
     }
 
     //Business logic that return an json

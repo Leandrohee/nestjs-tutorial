@@ -15,6 +15,8 @@ export class AppModule {}
 
 
 
+
+
 /* ---------------------------------------- INFORMATIONS ---------------------------------------- */
 /*
 The basic structure of a model in NestJs is this:

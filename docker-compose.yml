@@ -1,0 +1,20 @@
+version: '3'
+services:
+  dev-db:                                     #name of the service
+    image: postgres:14                        #Version of the image
+    container_name: pg-nest-docker-container  #The name of the container
+    ports:
+      - 5553:5432                             #The first is locally the second is in the container
+    environment:                              #Setting the enviroments variables to docker
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: 123            
+      POSTGRES_DB: nest
+    networks:
+      - nest-network                        #The service 'dev-db' is using this network (nest-network)
+    volumes:
+      -  pg_teste:/var/lib/postgresql/data  #Mount a volume for persistent data
+
+networks:
+  nest-network:                             #Setting an network to serves as a bridge to multiples services to comunicated with each other
+volumes:
+  pg_teste:                                 #Define a volume to persist data across container restarts
