@@ -140,6 +140,7 @@ export class PrismaService extends PrismaClient{
 
 4. Exporting prisma module just **LOCALLY**
 
+**prisma.module.ts**
 ```typescript
 @Module({
     providers: [PrismaService],
@@ -150,6 +151,7 @@ export class PrismaModule {}
 
 5. Exporting prisma module **GLOBALLY**
 
+**prisma.module.ts**
 ```typescript
 @Global()                           //Exporting PrismaServices globally
 @Module({
