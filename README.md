@@ -98,7 +98,75 @@ To create models do this:
 ```bash
 npx prisma --help              //To see all the comands
 npx prisma migrate dev         //To generate the migration
+npx prisma migrate deploy      //To apply existent migrations 
 npx prisma generate            //To crete typescript types for the models
+```
+
+## Providing prisma tools to all the project
+
+To providing prisma tools and methos we need to create a prisma model and allow acess to the whole app.
+
+1. Create the module folder with cli or manually
+
+```bash
+nest g module prisma
+```
+
+2. Set up **prisma.module.ts**
+
+```typescript
+@Module({
+  providers: [PrismaService]
+})
+export class PrismaModule {}
+```
+
+3. Create and set up **prisma.service.ts**
+
+```typescript
+@Injectable()
+export class PrismaService extends PrismaClient{
+    constructor(){
+        super({
+            datasources:{
+                db: {
+                    url: process.env.DATABASE_URL
+                }
+            }
+        })
+    }
+}
+```
+
+4. Exporting prisma module just **LOCALLY**
+
+```typescript
+@Module({
+    providers: [PrismaService],
+    exports: [PrismaService]        //Exporting PrismaServices locally
+})
+export class PrismaModule {}
+```
+
+5. Exporting prisma module **GLOBALLY**
+
+```typescript
+@Global()                           //Exporting PrismaServices globally
+@Module({
+    providers: [PrismaService],
+    exports: [PrismaService]        
+})
+export class PrismaModule {}
+```
+
+**app.module.ts**
+```typescript
+@Module({
+  imports: [AuthModule, PrismaModule],        //PrismaModule was to be in here to be broadcast globally
+  controllers: [AppController],
+  providers: [AppService],
+})
+export class AppModule {}
 ```
 
 ## Working with response from the post methods in rest API

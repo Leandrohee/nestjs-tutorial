@@ -3,7 +3,6 @@
 
 import { IsEmail, IsNotEmpty, IsString } from "class-validator";
 
-
 export class SignupDto{                     //Using class instead of interface so we can use decorators
     @IsEmail()                              //Make sure the email is an email and not empty
     @IsNotEmpty()

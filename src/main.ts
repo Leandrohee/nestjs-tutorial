@@ -1,5 +1,8 @@
+/* ---------------------------- THIS IS THE MAIN FILE OF THE PROJECT ---------------------------- */
+/* --------------------- IT USES APP.MODULE TO MANAGE ALL THE OTHERS MODULES -------------------- */
+
 import { NestFactory } from '@nestjs/core';
-import { AppModule } from './app.module';
+import { AppModule } from './app/app.module';
 import 'dotenv/config'
 import { ValidationPipe } from '@nestjs/common';
 
