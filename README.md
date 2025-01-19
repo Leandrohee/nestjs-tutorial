@@ -2,14 +2,14 @@
 
 Use the documentation website: https://docs.nestjs.com/first-steps
 
-## Cleaning the main folder
+# Cleaning the main folder
 
 Delete this files, because you will not need them in the begining
 - app.controller.spect.ts
 - app.controller.ts
 - app.service.ts
 
-## Modules information
+# Modules information
 
 Models are used to connect functionalities of the project in small pieces
 The basic structure of a model in NestJs is this:
@@ -27,7 +27,7 @@ You can also generate modules automaticly with the command:
 nest g module nameofthemodule
 ```
 
-## Controllers information
+# Controllers information
 
 Controllers are use to handle routes in NestJs
 
@@ -50,7 +50,7 @@ export class AuthController {
 }
 ```
 
-## Services|Providers information
+# Services|Providers information
 
 The services are responsable for the business logic of the project.
 
@@ -70,11 +70,11 @@ export class AuthService {
 }
 ```
 
-## Testing the api
+# Testing the api
 
 I'm using insomnia to test the api
 
-## Installing and using prisma as the main ORM
+# Installing and using prisma as the main ORM
 
 ```bash
 yarn add prisma -D
@@ -102,7 +102,7 @@ npx prisma migrate deploy      //To apply existent migrations
 npx prisma generate            //To crete typescript types for the models
 ```
 
-## Providing prisma tools to all the project
+# Providing prisma tools to all the project
 
 To providing prisma tools and methos we need to create a prisma model and allow acess to the whole app.
 
@@ -171,7 +171,7 @@ export class PrismaModule {}
 export class AppModule {}
 ```
 
-## Working with response from the post methods in rest API
+# Working with response from the post methods in rest API
 
 To work with post methods in rest API with Nest we have to learn 3 topics:
 - Dto             -> Data Transfer Objects
