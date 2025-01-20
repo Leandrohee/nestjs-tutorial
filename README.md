@@ -227,3 +227,11 @@ async function bootstrap() {
 }
 bootstrap();
 ```
+# Jwt in Nest.Js
+
+NestJs uses passport to work with JWT, so we need to install these packages first:
+
+```bash
+yarn add @nestjs/passport passport @nestjs/jwt passport-jwt
+yarn add @types/passport-jwt -D
+```
