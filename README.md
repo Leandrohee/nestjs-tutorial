@@ -235,3 +235,102 @@ NestJs uses passport to work with JWT, so we need to install these packages firs
 yarn add @nestjs/passport passport @nestjs/jwt passport-jwt
 yarn add @types/passport-jwt -D
 ```
+
+In the module that we are gonna use the JWT we have to import the JwtModule like that:
+
+**auth.module.ts**
+```typescript
+import { JwtModule } from "@nestjs/jwt";
+
+@Module({
+    imports: [PrismaModule, JwtModule.register({})],            //Importing JWt to use in the auth module
+    controllers: [AuthController],
+    providers: [AuthService]
+})
+export class AuthModule{}
+```
+
+In the service we are gonna build the logic to generate to jwt-token
+
+**auth.service.ts**
+
+```typescript
+@Injectable()
+export class AuthService {
+    constructor(
+        private prisma: PrismaService,                                              //Recieving prisma services
+        private jwt: JwtService                                                     //Recieving jwt services 
+    ){}
+  
+    async genToken(userId: number, email: string): Promise<{access_token: string}> {
+        const payload = {
+            sub: userId,                                                            //sub is a convention name in Jwt for a unique value, in this case the user id
+            email: email
+        };
+
+        try{
+            //Loading the jwt secret from the env
+            const jwtSecret = process.env.JWT_SECRET;
+            if (!jwtSecret) throw new Error("Secret not found!");
+    
+            //Generating and storing the jwt token
+            const token = await this.jwt.signAsync(payload, {secret: jwtSecret, expiresIn: '15m'})   
+            return { access_token: token};
+
+        } catch (error){
+            throw new ForbiddenException(error.message);
+        }
+    }
+}   
+```
+
+# Strategies and Guards (Middlewares)
+
+**Creating a strategy (uses to authenticate the jwt)**
+
+```typescript
+@Injectable()
+export class JwtStrategy extends PassportStrategy(Strategy,"jwt"){      //"jwt" is the name that goes in the guard
+    constructor(){
+        super({
+            jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+            secretOrKey: process.env.JWT_SECRET
+        });
+    }
+
+    //Validating and returning the payload in every res router
+    async validate(payload: any): Promise<any>{
+        //Returning the payload
+        return payload;
+    }
+}
+```
+
+**Using Guards to make a route protected to be only acessible with a valid jwt in the header**
+
+```typescript
+//route protected /user/getme
+@UseGuards(AuthGuard('jwt'))                //Protect the route using the strategy. The "jwt" is set in the strategy
+@Get('getme')
+getUser(@Body() dto: UserDto){
+  return this.userService.getUser(dto)
+}
+```
+
+**Getting the jwt and his information from the request**
+
+```typescript
+//route /user/getjwt
+@UseGuards(AuthGuard('jwt'))                //Protect the route using the strategy. The "jwt" is set in the strategy
+@Get('getjwt')
+getJwt(@Req() req: any){
+  const tokenDetails = req.user
+  let findToken = req.rawHeaders.find((item: string) => item.includes('Bearer'))      //Get The Bearer string
+  findToken = findToken.split(" ")[1]                                                 //Isolate the token from the string
+
+  return {
+      token: findToken,
+      tokenDetails: tokenDetails
+  }
+}
+```

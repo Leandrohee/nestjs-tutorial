@@ -5,12 +5,16 @@ import { SigninDto, SignupDto } from "./dto";
 import * as bcrypt from 'bcrypt';
 import { PrismaService } from "src/prisma/prisma.service";
 import { PrismaClientKnownRequestError } from "@prisma/client/runtime/library";
+import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
-    constructor(private prisma: PrismaService){}                                    //Recieving prisma services
+    constructor(
+        private prisma: PrismaService,                                              //Recieving prisma services
+        private jwt: JwtService                                                     //Recieving jwt services 
+    ){}                                    
 
-    //Creating a user in the database with the route /auth/signup (post)
+    /* ------------- CREATING A USER IN THE DATABASE WITH THE ROUTE  /auth/signup (post) ------------ */
     async signup(dto: SignupDto){
         try{
             //Generating a hash based in the password provided
@@ -40,7 +44,7 @@ export class AuthService {
         }
     }   
  
-    //Sign in with credentials 
+    /* ------------------------ SIGNIN USING CREDENTIALS (EMAIL AND PASSWORD) ----------------------- */
     async signin(dto: SigninDto){
         try{
             //Verifing if the user exists
@@ -56,12 +60,36 @@ export class AuthService {
             if (!isPasswordValid) throw new Error('Password incorrect');
 
             //Return successfully
-            return {msg: `User ${userToVerify.email} logged in!`}
+            return this.genToken(userToVerify.id,userToVerify.email)
+
         } catch (error) {
             throw new ForbiddenException(error.message)                             //ForbiddenException is a NestJs error
         }
     }
+
+    /* -------------------------------------- GENERATING A JWT -------------------------------------- */
+    async genToken(userId: number, email: string): Promise<{access_token: string}> {
+        const payload = {
+            sub: userId,                                                            //sub is a convention name in Jwt for a unique value, in this case the user id
+            email: email
+        };
+
+        try{
+            //Loading the jwt secret from the env
+            const jwtSecret = process.env.JWT_SECRET;
+            if (!jwtSecret) throw new Error("Secret not found!");
+    
+            //Generating and storing the jwt token
+            const token = await this.jwt.signAsync(payload, {secret: jwtSecret, expiresIn: '1h'})   
+            return { access_token: token};
+
+        } catch (error){
+            throw new ForbiddenException(error.message);
+        }
+    }
+
 }
+
 
 
 /* ----------------------------------------- INFORMATION ---------------------------------------- */

@@ -5,9 +5,10 @@ import { AuthModule } from '../auth/auth.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { PrismaModule } from '../prisma/prisma.module';
+import { UserModule } from 'src/user/user.module';
 
 @Module({
-  imports: [AuthModule, PrismaModule],        //PrismaModule was to be in here to be broadcast globally
+  imports: [AuthModule, PrismaModule,UserModule],        //PrismaModule was to be in here to be broadcast globally
   controllers: [AppController],
   providers: [AppService],
 })
