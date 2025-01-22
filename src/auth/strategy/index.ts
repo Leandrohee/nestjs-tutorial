@@ -17,7 +17,12 @@ export class JwtStrategy extends PassportStrategy(Strategy,"jwt"){      //"jwt" 
     //Validating and returning the payload in every res router
     async validate(payload: any): Promise<any>{
         //Returning the payload
-        return payload;
+        return {
+            sub: payload.sub,
+            email : payload.email,
+            iat: new Date(Number(payload.iat) * 1000).toLocaleTimeString(),              //transforming the Unix timestamp to a time in my local time
+            exp: new Date(Number(payload.exp) * 1000).toLocaleTimeString()               //transforming the Unix timestamp to a time in my local time
+        };
     }
 }
 

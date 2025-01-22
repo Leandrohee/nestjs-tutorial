@@ -3,12 +3,11 @@
 import { ForbiddenException, Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
 import { UserDto } from "./dto";
+import { Request } from "express";
 
 @Injectable()
 export class UserService{
-    constructor(
-        private prisma: PrismaService                                               //I use the prisma service without the need to import locally. @Global it works
-    ){}
+    constructor(private prisma: PrismaService){}                                    //I use the prisma service without the need to import locally. @Global it works
 
     /* ---------------------------- RETURNING THE USER BASED ON THE EMAIL --------------------------- */
     async getUser(dto: UserDto){
@@ -28,7 +27,7 @@ export class UserService{
     }
     
     //Returning the information about the jwt token
-    getJwt(req: any){
+    getJwt(req: Request){
         const tokenDetails = req.user
         let findToken = req.rawHeaders.find((item: string) => item.includes('Bearer'))      //Get The Bearer string
         findToken = findToken.split(" ")[1]                                                 //Isolate the token from the string
