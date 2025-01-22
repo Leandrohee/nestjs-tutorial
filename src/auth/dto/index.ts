@@ -1,7 +1,7 @@
 /* ------------------ THIS FILE IS RESPONSIBLE FOR TYPING THE RETURN OF THE API ----------------- */
 /* ---------------------------- DTO STANDS FOR 'DATA TRANSFER OBJECT' --------------------------- */
 
-import { IsEmail, IsNotEmpty, IsString } from "class-validator";
+import { IsEmail, IsNotEmpty, IsNumber, IsString } from "class-validator";
 
 //Return of the post route /auth/signout
 export class SignupDto{                     //Using class instead of interface so we can use decorators
@@ -27,3 +27,4 @@ export class SigninDto{
     @IsNotEmpty()
     password: string;
 }
+

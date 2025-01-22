@@ -102,6 +102,7 @@ npx prisma --help              //To see all the comands
 npx prisma migrate dev         //To generate the migration
 npx prisma migrate deploy      //To apply existent migrations 
 npx prisma generate            //To crete typescript types for the models
+npx prisma studio              //To run the studio version
 ```
 
 # Providing prisma tools to all the project

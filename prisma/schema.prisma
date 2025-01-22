@@ -10,23 +10,40 @@ datasource db {
 }
 
 model User{
-  id Int @id @default(autoincrement())                      //Identification key, has to be unique
-  createdAt DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  email String @unique                                      //Email     - Required and unique
-  hash String                                               //Password  - Required
-  firsName String?                                          //FirsName  - Optional
-  lastName String?                                          //LastName  - Optional
-  bookmarks Bookmark[]                                      //relation column OneToMany with Bookmark
+  id_user       Int @id @default(autoincrement())               //Identification key, has to be unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  email         String @unique                                  //Email     - Required and unique
+  hash          String                                          //Password  - Required
+  firstName     String?                                         //FirsName  - Optional
+  lastName      String?                                         //LastName  - Optional
+  bookmarks     Bookmark[]                                      //relation column OneToMany with Bookmark
+  roles         Roles_Users[]                         
 }
 
 model Bookmark{
-  id Int @id @default(autoincrement())                      //Identification key, has to be unique
-  createdAt DateTime @default(now())
-  updatedAt  DateTime @updatedAt
-  title String                                              //Required
-  description String?                                       //Optinal
-  link String                                               //Required
-  userId Int                                                //Relation column ManyToOne with User
-  user User @relation(fields: [userId], references: [id])   //We use the logic only in ManyToOne, "id" is referenced to User.id
+  id_bookmark   Int @id @default(autoincrement())                       //Identification key, has to be unique
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+  title         String                                                  //Required
+  description   String?                                                 //Optinal
+  link          String                                                  //Required
+  id_user        Int                                                       //Relation column ManyToOne with User
+  user          User @relation(fields: [id_user], references: [id_user]) //We use the logic only in ManyToOne, "id" is referenced to User.id
+}
+
+model Roles{
+  id_role       Int @id @default(autoincrement())
+  roleName      String
+  rolesUser     Roles_Users[]
+}
+
+model Roles_Users{
+  id_role_user   Int @id @default(autoincrement())
+  id_role        Int
+  id_user        Int
+  role            Roles @relation(fields: [id_role], references: [id_role], onDelete: Cascade)
+  user          User @relation(fields: [id_user], references: [id_user], onDelete: Cascade)
+
+  @@unique([id_role, id_user])                                    //Is not allow 2 rows with the same value of roleId and userId in the same row
 }

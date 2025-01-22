@@ -28,6 +28,14 @@ export class AuthService {
                     hash: hash
                 }
             })
+
+            //Adding a role to the user
+            await this.prisma.roles_Users.create({
+                data:{
+                    id_user: user.id_user,
+                    id_role: 1                                                      //Role 1 means user
+                }
+            }) 
     
             //Return a successfully msg 
             return {msg: `The user ${user.email} has been created`}
@@ -59,8 +67,22 @@ export class AuthService {
             const isPasswordValid = await bcrypt.compare(dto.password,userToVerify.hash);
             if (!isPasswordValid) throw new Error('Password incorrect');
 
-            //Return successfully
-            return this.genToken(userToVerify.id,userToVerify.email)
+            //Getting the roles of this user
+            let getRoles:Array<any> = await this.prisma.roles_Users.findMany({
+                where:{
+                    id_user: userToVerify.id_user
+                }
+            })
+
+            //Filtering only the number of the roles
+            getRoles = getRoles.map(item => item.id_role)
+
+            //Generate a token if password match
+            return this.genToken(
+                userToVerify.id_user,
+                userToVerify.email,
+                getRoles
+            )
 
         } catch (error) {
             throw new ForbiddenException(error.message)                             //ForbiddenException is a NestJs error
@@ -68,10 +90,11 @@ export class AuthService {
     }
 
     /* -------------------------------------- GENERATING A JWT -------------------------------------- */
-    async genToken(userId: number, email: string): Promise<{access_token: string}> {
+    async genToken(userId:number ,email: string ,getRoles: Array<any>): Promise<{access_token: string}> {
         const payload = {
             sub: userId,                                                            //sub is a convention name in Jwt for a unique value, in this case the user id
-            email: email
+            email: email,
+            getRoles: getRoles
         };
 
         try{

@@ -20,6 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy,"jwt"){      //"jwt" 
         return {
             sub: payload.sub,
             email : payload.email,
+            roles : payload.getRoles,
             iat: new Date(Number(payload.iat) * 1000).toLocaleTimeString(),              //transforming the Unix timestamp to a time in my local time
             exp: new Date(Number(payload.exp) * 1000).toLocaleTimeString()               //transforming the Unix timestamp to a time in my local time
         };
