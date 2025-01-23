@@ -5,6 +5,8 @@ import { UserService } from "./user.service";
 import { UserDto } from "./dto";
 import { AuthGuard } from "@nestjs/passport";
 import { Request } from "express";
+import { RolesGuard } from "src/auth/guard/RolesGuard";
+import { Roles } from "src/decorators/Roles";
 
 @UseGuards(AuthGuard('jwt'))                 //The guards can be use in the whole controller as well
 @Controller('user')
@@ -22,5 +24,29 @@ export class UserController{
     @Get('getjwt')
     getJwt(@Req() req: Request){
         return this.userService.getJwt(req)
+    }
+
+    //route /user/admin -> This route is to test if the roles guards and decorators are working
+    @UseGuards(RolesGuard)
+    @Roles('admin',)
+    @Get('admin')
+    onlyAdmin(){
+        return 'Only admin can acess this message'
+    }
+
+    //route /user/superUser -> This route is to test if the roles guards and decorators are working
+    @UseGuards(RolesGuard)
+    @Roles('superUser',)
+    @Get('superUser')
+    onlySuperUser(){
+        return 'Only super users can acess this message'
+    }
+
+    //route /user/user -> This route is to test if the roles guards and decorators are working
+    @UseGuards(RolesGuard)
+    @Roles('user',)
+    @Get('user')
+    onlyUser(){
+        return 'Only user can acess this message'
     }
 }

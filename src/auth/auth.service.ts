@@ -67,15 +67,18 @@ export class AuthService {
             const isPasswordValid = await bcrypt.compare(dto.password,userToVerify.hash);
             if (!isPasswordValid) throw new Error('Password incorrect');
 
-            //Getting the roles of this user
+            //Getting the roles of this user by name. Necessary a join betwen roles and roles_users
             let getRoles:Array<any> = await this.prisma.roles_Users.findMany({
                 where:{
                     id_user: userToVerify.id_user
+                },
+                include:{
+                    role: true                          //Allow the join betwenn the tables roles_Users and roles
                 }
             })
 
-            //Filtering only the number of the roles
-            getRoles = getRoles.map(item => item.id_role)
+            //Filtering only the names of the roles
+            getRoles = getRoles.map(item => (item.role.roleName))
 
             //Generate a token if password match
             return this.genToken(
@@ -90,7 +93,7 @@ export class AuthService {
     }
 
     /* -------------------------------------- GENERATING A JWT -------------------------------------- */
-    async genToken(userId:number ,email: string ,getRoles: Array<any>): Promise<{access_token: string}> {
+    async genToken(userId:number ,email: string ,getRoles: Array<string>): Promise<{access_token: string}> {
         const payload = {
             sub: userId,                                                            //sub is a convention name in Jwt for a unique value, in this case the user id
             email: email,
