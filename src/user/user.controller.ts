@@ -19,7 +19,7 @@ export class UserController{
     getUser(@Body() dto: UserDto, @Req() req: Request){
         return this.userService.getUser(dto)
     }
-    
+
     //route /user/getjwt
     @Get('getjwt')
     getJwt(@Req() req: Request){
